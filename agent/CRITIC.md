@@ -35,6 +35,16 @@ Engineering: modular monolith first; Postgres + pgvector + LocalFileBlobStore
   compatibility/calculator layer the LLM cannot override; idempotent external
   writes with approval gates; R0–R4 risk classes enforced; immutable audit trace.
 
+## 3D-story gate (owner rule: 3D first, platform gated)
+
+Any story shipping UI copy must land its 3D artifacts FIRST in `packages/3d`:
+story-step def, named subsystem nodes, camera preset per step, annotation
+copy, and static-poster fallback. BLOCK if: a story renders without its 3D
+(or fallback); camera motion runs under `prefers-reduced-motion`; scroll is
+hijacked; the 3D bundle blocks primary content/CTA; a subsystem is
+clickable with nowhere to go (every node resolves to info or an action);
+WebGL-missing shows a blank region instead of the poster.
+
 ## How to invoke
 
 - OpenCode: Task/subagent `critic` (`mode: subagent`, `edit: deny`,

@@ -9,6 +9,8 @@ Source of truth order: master spec → PRODUCT/ARCHITECTURE → ADRs → ROADMAP
 2. Validate repo health (install/build/test).
 3. Pick highest-priority READY task with dependencies done.
 4. Implement smallest coherent vertical slice (prod code, not mocks).
+   3D-first: a story's 3D artifacts (story def, nodes, camera, fallback)
+   land before its platform/integration code.
 5. Run format/lint/typecheck/unit/integration + task acceptance tests.
    UI → Playwright desktop/mobile. AI → golden eval subset.
 6. Self-review diff for security, tenancy, dead code.

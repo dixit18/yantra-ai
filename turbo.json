@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**"]
     },
     "typecheck": {
       "dependsOn": ["^build"]
@@ -11,6 +11,11 @@
     "lint": {},
     "test": {
       "dependsOn": ["^build"]
+    },
+    "e2e": {
+      "dependsOn": ["build"],
+      "outputs": ["playwright-report/**", "test-results/**"],
+      "cache": false
     },
     "dev": {
       "persistent": true,

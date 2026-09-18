@@ -29,6 +29,7 @@ FAIL the review if you see any of these without a written justification in DECIS
 - Pill-everything, shadow-everything, no alignment grid, unreadable contrast.
 - 3D/motion that decorates instead of explaining (must communicate Scan → Identify → Diagnose → Act per spec §7.4).
 - No `prefers-reduced-motion` handling, scroll hijack, or 3D bundle blocking primary content/CTA.
+- Story-first violation: UI copy shipped without its 3D artifacts (story-step def, named nodes, camera per step, poster fallback) landing first in `packages/3d`.
 
 PASS requires: restrained industrial palette (graphite / warm off-white / steel gray + one safety accent; green/amber/red semantic only), grotesk UI + mono for serials/part numbers/measurements/citations, 12-col alignment, borders over shadows, dense-calm console tables, evidence pane beside AI answers, empty/loading/error/permission states designed.
 

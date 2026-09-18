@@ -23,6 +23,11 @@ build/
 .next/
 out/
 .turbo/
+*.tsbuildinfo
+
+# Playwright
+playwright-report/
+test-results/
 
 # Data / uploads (local BlobStore root)
 data/uploads/

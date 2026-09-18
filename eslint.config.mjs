@@ -12,6 +12,7 @@ export default tseslint.config(
       // Owner scaffold; @neon/config wiring lands with the Neon-wiring follow-up
       // after P1-ENV-002 (see DECISIONS.md).
       'neon.ts',
+      '**/next-env.d.ts',
     ],
   },
   js.configs.recommended,

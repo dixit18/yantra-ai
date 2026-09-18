@@ -23,7 +23,15 @@
   (typecheck/test show 14 tasks for 13 workspaces: the extra task is
   `@yantra/contracts#build`, pulled in via the `^build` edge because
   `@yantra/api` depends on it — confirmed with `turbo run typecheck --dry`.)
-- Next ready: P1-ENV-002 (lean env validation — unblocked by P1-REPO-001) and
+- 3D-FIRST DONE 2026-09-18: `packages/3d` pipeline (story machine,
+  parametric demo unit, poster fallback, GSAP camera rig, zoom-off controls)
+  - Next.js hero (SSR copy, lazy canvas, stepper, node info). Verified:
+    `pnpm build/typecheck/lint/test` green, `pnpm e2e` 5/5 (content, stepper,
+    reduced-motion poster, no scroll hijack, mobile), live probe canvas:1 with
+    zero page errors, screenshot-reviewed twice.
+- Platform tasks queue behind this gate (owner order); next: P1-ENV-002.
+- Next ready: 3D pipeline (this task), then P1-ENV-002 (lean env validation —
+  unblocked by P1-REPO-001) and
   P1-OBS-005 / P1-UI-006 / P1-CICD-009 per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls

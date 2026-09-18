@@ -29,4 +29,37 @@
   includes it (per-package `include: ["src"]` only), so green gates are honest.
   Wiring (dep + `neon deploy`) is the named Neon-wiring follow-up after
   P1-ENV-002, not P1-REPO-001.
+- 2026-09-18 (owner override): 3D pipeline promoted ahead of platform work.
+  Every new story lands its 3D requirements FIRST (story def, nodes, camera,
+  fallback in `packages/3d`); platform tasks (P1-ENV-002 onward) queue behind
+  the 3D-perfect gate (canvas-or-poster, reduced-motion, no hijack, mobile,
+  critic PASS). Backlog yaml untouched — order recorded here + STATUS.
+- 2026-09-18 (3D pipeline): `@yantra/3d` declares `react`/`react-dom` as
+  peerDeps, NOT devDeps — pnpm strictness caught the undeclared runtime dep
+  (npm hoisting would have masked it); peers resolve to the app's single copy
+  via the store, so hooks never see two reconcilers.
+- 2026-09-18 (3D visuals, from screenshot review): body `#59616c` over
+  `#3a4048` dark detail, ambient 1.15 + key 2.0, ground disc r 2.6; scan camera
+  pulled to [6.0,3.4,6.0]; diagnose settled at [4.8,2.9,3.8]→[0.3,1.2,0] after
+  the critic caught edge bleed — v4 screenshot confirms unclipped base. `beacon`/
+  the critic caught edge bleed — v4 screenshot confirms unclipped base. `beacon`/
+  `screen` emissive now scales with selection/focus via tested
+  `statusLightIntensity()`. Final diagnose preset [5.3,3.1,4.3]→[0.2,1.15,0]
+  (v5): machine fully in frame; floor disc may exit frame at the bottom —
+  waived as natural studio-floor behavior (gate criterion is an unclipped
+  subject, not a contained ellipse, which would forbid focus shots).
+- 2026-09-18 (ops lesson): `pnpm start` orphans `next-server` when only the
+  parent is killed — a zombie on :3100 served a stale `.next` (poster +
+  dead stepper, zero pageerrors). Probes must free the port first and capture
+  console errors + failed requests, not just pageerrors.
+- 2026-09-18 (3D deps, one line each): `three` renders WebGL; `@react-three/fiber`
+  is its declarative React reconciler (spec §7.6) instead of imperative scene
+  code; `@react-three/drei` supplies tested OrbitControls instead of hand-rolled
+  orbit math; `gsap` tweens camera moves with fixed duration/ease + kill-safe
+  cleanup instead of ad-hoc useFrame lerps; `next@16` is the spec §8.3 App Router
+  host; `react@19` is the Next/R3F peer line (fiber 9.7's `<19.3` peer warning
+  noted — live canvas probe with zero page errors is the acceptance evidence);
+  `@playwright/test` enforces the 3D-perfect gate in CI.
+- Waived (critic-agreed): full-viewport hero whitespace is deliberate staging,
+  not a void; the "best service engineer" headline is spec §7.4 verbatim.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

@@ -28,7 +28,7 @@ Toolchain: Node 22 (`.nvmrc`) + pnpm 10.13.1. The repo root pins
 ## Monorepo
 
 pnpm workspaces + Turbo. Layout follows the master spec: `apps/web`,
-`apps/console`, `apps/api`; `packages/{ui,contracts,db,auth,agent-core,
+`apps/console`, `apps/api`; `packages/{3d,ui,contracts,db,auth,agent-core,
 connectors,knowledge,evals,telemetry,config}`. Shared versions live in the
 `catalog:` section of `pnpm-workspace.yaml`.
 
@@ -39,7 +39,15 @@ connectors,knowledge,evals,telemetry,config}`. Shared versions live in the
 | `pnpm typecheck`    | `turbo run typecheck` (`tsc --noEmit`)                      |
 | `pnpm lint`         | `turbo run lint` (eslint, zero warns)                       |
 | `pnpm test`         | `turbo run test` (vitest)                                   |
+| `pnpm e2e`          | `turbo run e2e` (Playwright, Chromium)                      |
 | `pnpm format:check` | prettier check (owner docs excluded, see `.prettierignore`) |
+
+## 3D pipeline (3D-first rule)
+
+No story ships before its 3D requirements exist in `packages/3d` (story def,
+named nodes, camera per step, annotation copy, poster fallback) — see
+`packages/3d/README.md`. Platform code queues behind the 3D-perfect gate:
+canvas-or-poster, reduced-motion, no scroll hijack, mobile, critic PASS.
 
 Every workspace ships a tiny real, tested seed (never a mock as production);
 full implementations land in their backlog tasks. The `api → contracts`
