@@ -30,9 +30,10 @@ answer (doc/version + page/section/table anchor); abstention offers a
 discriminating question or escalation packet, never a confident guess.
 
 Engineering: modular monolith first; Postgres + pgvector + LocalFileBlobStore
-+ Postgres job/workflow state only; ModelGateway abstraction; deterministic
-compatibility/calculator layer the LLM cannot override; idempotent external
-writes with approval gates; R0–R4 risk classes enforced; immutable audit trace.
+
+- Postgres job/workflow state only; ModelGateway abstraction; deterministic
+  compatibility/calculator layer the LLM cannot override; idempotent external
+  writes with approval gates; R0–R4 risk classes enforced; immutable audit trace.
 
 ## How to invoke
 

@@ -1,0 +1,6 @@
+# Owner-authored canonical artifacts: never reformat (byte-stable source of truth).
+YANTRA_AI_AGENT_MASTER_SPEC_LEAN_MVP.md
+yantra_ai_initial_backlog_LEAN_MVP.yaml
+yantra_ai_master_build_spec_LEAN_MVP.docx
+# Owner-specified scaffold; @neon/config wiring lands with monorepo follow-up.
+neon.ts
