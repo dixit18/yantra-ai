@@ -1,0 +1,880 @@
+project: Yantra AI
+version: 2
+policy:
+  selection: highest_priority_ready_task_with_all_dependencies_done
+  priorities:
+  - P0
+  - P1
+  - P2
+  - P3
+  human_gates:
+  - production_secrets
+  - paid_service_enablement
+  - destructive_prod_migration
+  - external_customer_send
+  - safety_policy_expansion
+  - production_release_if_configured
+  infrastructure_mode: lean_mvp_postgres_only_until_client_trigger
+tasks:
+- id: P1-REPO-001
+  phase: 1
+  area: platform
+  objective: Bootstrap pnpm/turborepo monorepo with apps/packages from master spec
+  priority: P0
+  status: ready
+  blocked_by: []
+  acceptance:
+  - pnpm install succeeds
+  - root lint/typecheck/test scripts exist
+  - README explains local bootstrap
+  verification:
+  - pnpm lint
+  - pnpm typecheck
+  - pnpm test
+  risk: low
+  human_gate: false
+- id: P1-ENV-002
+  phase: 1
+  area: platform
+  objective: Configure lean MVP environment using supplied PostgreSQL DATABASE_URL
+    and local persistent file directory; no Redis, S3, Temporal or mandatory Docker
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-REPO-001
+  acceptance:
+  - application connects using DATABASE_URL
+  - pgvector extension enabled when supported, with clear fallback/error if unavailable
+  - LOCAL_BLOB_ROOT directory is created and writable
+  - .env.example contains placeholders only
+  - project boots without Redis, object storage, Temporal or Docker
+  verification:
+  - database connectivity test
+  - local blob adapter smoke test
+  - application bootstrap test
+  risk: low
+  human_gate: false
+- id: P1-DB-003
+  phase: 1
+  area: database
+  objective: Create initial tenant/auth/audit schema and migration tooling
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-ENV-002
+  acceptance:
+  - tenant_id enforced on tenant-owned tables
+  - migration from empty database succeeds
+  - seed creates demo tenant without secrets
+  verification:
+  - db migration test
+  - tenant isolation unit test
+  risk: high
+  human_gate: false
+- id: P1-AUTH-004
+  phase: 1
+  area: security
+  objective: Implement authentication skeleton, RBAC and tenant request context
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-DB-003
+  acceptance:
+  - unauthenticated protected request denied
+  - cross-tenant resource access denied
+  - permissions tested server-side
+  verification:
+  - API auth tests
+  - cross-tenant adversarial tests
+  risk: high
+  human_gate: false
+- id: P1-OBS-005
+  phase: 1
+  area: observability
+  objective: Implement structured logging, correlation IDs and audit event base
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P1-REPO-001
+  acceptance:
+  - request correlation ID appears across API logs
+  - audit writer supports typed events
+  - secrets are redacted
+  verification:
+  - logging tests
+  risk: low
+  human_gate: false
+- id: P1-UI-006
+  phase: 1
+  area: frontend
+  objective: Create custom Yantra design tokens/primitives and application shell
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P1-REPO-001
+  acceptance:
+  - responsive shell works desktop/mobile
+  - keyboard focus visible
+  - no default template branding/styles remain
+  verification:
+  - pnpm build
+  - Playwright shell test
+  risk: low
+  human_gate: false
+- id: P1-WEB-007
+  phase: 1
+  area: frontend
+  objective: Build marketing home narrative and core pages without 3D dependency
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P1-UI-006
+  acceptance:
+  - home/product/security/contact routes complete
+  - semantic headings and responsive layout
+  - CTA form validates
+  verification:
+  - Playwright marketing.spec.ts
+  - accessibility smoke
+  risk: low
+  human_gate: false
+- id: P1-3D-008
+  phase: 1
+  area: frontend
+  objective: Add lazy-loaded Three.js/R3F machine hero with reduced-motion/static
+    fallback
+  priority: P2
+  status: blocked
+  blocked_by:
+  - P1-WEB-007
+  acceptance:
+  - primary content renders before 3D
+  - reduced-motion fallback works
+  - mobile/static fallback works
+  - no scroll hijack
+  verification:
+  - Playwright motion fallback test
+  - manual performance check
+  risk: low
+  human_gate: false
+- id: P1-CICD-009
+  phase: 1
+  area: devops
+  objective: Create CI pipeline for format/lint/typecheck/tests/build
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-REPO-001
+  acceptance:
+  - pipeline runs on pull request
+  - failure blocks merge
+  - dependency cache configured
+  verification:
+  - CI dry run
+  risk: low
+  human_gate: false
+- id: P2-OBJ-010
+  phase: 2
+  area: knowledge
+  objective: Implement tenant-scoped BlobStore abstraction with local persistent filesystem
+    implementation and immutable content hashes
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-AUTH-004
+  - P1-ENV-002
+  acceptance:
+  - uploads are referenced by opaque tenant-scoped file IDs
+  - content hash and metadata stored in PostgreSQL
+  - arbitrary filesystem paths are never exposed to users
+  - duplicate binary detected
+  - storage interface can later swap to object storage without changing knowledge
+    logic
+  verification:
+  - local upload integration tests
+  - tenant traversal/adversarial path tests
+  risk: high
+  human_gate: false
+- id: P2-DOC-011
+  phase: 2
+  area: knowledge
+  objective: Implement document/document_version lifecycle and approval states
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-OBJ-010
+  acceptance:
+  - document versions immutable
+  - supersession supported
+  - state transitions validated
+  verification:
+  - DB/service tests
+  risk: low
+  human_gate: false
+- id: P2-PARSE-012
+  phase: 2
+  area: knowledge
+  objective: Create PDF parser preserving page and section anchors
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-DOC-011
+  acceptance:
+  - segments contain page and section path
+  - table text remains grouped
+  - parse failures are observable/retryable
+  verification:
+  - parser fixture tests
+  risk: low
+  human_gate: false
+- id: P2-XLSX-013
+  phase: 2
+  area: knowledge
+  objective: Create XLSX/CSV parser for parts/fitment tables
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P2-DOC-011
+  acceptance:
+  - headers/types preserved
+  - part/model tokens normalized without losing raw values
+  - large file handled asynchronously
+  verification:
+  - spreadsheet fixtures
+  risk: low
+  human_gate: false
+- id: P2-EMBED-014
+  phase: 2
+  area: knowledge
+  objective: Implement embedding/index pipeline using pgvector
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-PARSE-012
+  - P1-DB-003
+  acceptance:
+  - embeddings tenant-filtered
+  - re-index on new version supported
+  - old/superseded version can be excluded
+  verification:
+  - retrieval integration tests
+  risk: high
+  human_gate: false
+- id: P2-HYBRID-015
+  phase: 2
+  area: knowledge
+  objective: Implement hybrid lexical/vector retrieval with structured filters
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-EMBED-014
+  acceptance:
+  - exact technical tokens preserved
+  - tenant/model/version filters applied before answer
+  - retrieval trace stored
+  verification:
+  - golden retrieval tests
+  risk: high
+  human_gate: false
+- id: P2-CITE-016
+  phase: 2
+  area: knowledge
+  objective: Build citation renderer/source viewer linked to exact page/section
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-PARSE-012
+  - P2-HYBRID-015
+  acceptance:
+  - answer citation opens correct document version/page
+  - user cannot access other tenant source
+  verification:
+  - Playwright citation.spec.ts
+  - permission tests
+  risk: high
+  human_gate: false
+- id: P2-AGENT-017
+  phase: 2
+  area: agent
+  objective: 'Implement bounded specialist graph: intent→retrieval→draft→citation
+    validation→abstain'
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-HYBRID-015
+  - P2-CITE-016
+  acceptance:
+  - structured graph state persisted in run trace
+  - unsupported query abstains
+  - technical answer requires citation
+  verification:
+  - agent unit tests
+  - golden eval smoke
+  risk: high
+  human_gate: false
+- id: P2-EVAL-018
+  phase: 2
+  area: evals
+  objective: Create golden evaluation schema/runner and seed synthetic cases
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-AGENT-017
+  acceptance:
+  - dataset versioned
+  - scores citation/grounding/abstention
+  - CI smoke suite available
+  verification:
+  - eval runner self-test
+  risk: high
+  human_gate: false
+- id: P2-CONSOLE-019
+  phase: 2
+  area: frontend
+  objective: Build knowledge inventory, ingestion status and source viewer UI
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P2-DOC-011
+  - P2-CITE-016
+  acceptance:
+  - admin can upload/view versions/status
+  - failed ingestion displays reason/retry
+  - permissions enforced
+  verification:
+  - Playwright knowledge console
+  risk: low
+  human_gate: false
+- id: P3-CAT-020
+  phase: 3
+  area: domain
+  objective: Implement product family/model/revision schema and admin CRUD/import
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-DB-003
+  acceptance:
+  - effective dates/revision status supported
+  - source references possible
+  - tenant scoped
+  verification:
+  - domain tests
+  risk: low
+  human_gate: false
+- id: P3-ASSET-021
+  phase: 3
+  area: domain
+  objective: Implement installed asset with serial/configuration/warranty snapshot
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P3-CAT-020
+  acceptance:
+  - serial unique per tenant policy
+  - asset points to revision
+  - config snapshot versioned
+  verification:
+  - asset tests
+  risk: low
+  human_gate: false
+- id: P3-QR-022
+  phase: 3
+  area: frontend
+  objective: Implement signed/opaque QR asset deep links
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P3-ASSET-021
+  acceptance:
+  - QR never exposes database ID
+  - revocation/rotation possible
+  - unauthenticated context limited by policy
+  verification:
+  - QR security tests
+  risk: high
+  human_gate: false
+- id: P3-RESOLVE-023
+  phase: 3
+  area: agent
+  objective: Add asset/product context resolution node and revision applicability
+    filter
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P3-ASSET-021
+  - P2-AGENT-017
+  acceptance:
+  - same question can produce revision-specific evidence
+  - unknown asset asks discriminating question
+  - run trace shows resolved context
+  verification:
+  - revision golden evals
+  risk: high
+  human_gate: false
+- id: P3-RISK-024
+  phase: 3
+  area: security
+  objective: Implement R0-R4 risk classifier/policy gates
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P2-AGENT-017
+  acceptance:
+  - high-risk tests cannot bypass evidence/role policy
+  - R4 autonomous control unavailable
+  - policy decisions audited
+  verification:
+  - safety eval suite
+  risk: high
+  human_gate: false
+- id: P3-CASE-025
+  phase: 3
+  area: service
+  objective: Implement service case and escalation context packet
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P3-RESOLVE-023
+  - P3-RISK-024
+  acceptance:
+  - case contains asset, issue, evidence, attempted steps
+  - expert summary generated from structured state
+  - status lifecycle validated
+  verification:
+  - service case integration tests
+  risk: low
+  human_gate: false
+- id: P3-FEEDBACK-026
+  phase: 3
+  area: knowledge
+  objective: Capture expert resolution and create unapproved knowledge candidate
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P3-CASE-025
+  acceptance:
+  - resolution never auto-approved
+  - candidate links service case evidence
+  - review queue updated
+  verification:
+  - knowledge candidate test
+  risk: high
+  human_gate: false
+- id: P4-PART-027
+  phase: 4
+  area: parts
+  objective: Implement part, supersession and BOM entities
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P3-CAT-020
+  acceptance:
+  - part revisions/supersession represented
+  - BOM scoped to model/revision/config
+  verification:
+  - parts domain tests
+  risk: low
+  human_gate: false
+- id: P4-COMP-028
+  phase: 4
+  area: parts
+  objective: Implement deterministic part compatibility rule engine
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P4-PART-027
+  - P3-ASSET-021
+  acceptance:
+  - compatible result includes rule/source
+  - ambiguous result is not labeled compatible
+  - rules versioned
+  verification:
+  - compatibility golden tests
+  risk: high
+  human_gate: false
+- id: P4-AGENT-029
+  phase: 4
+  area: agent
+  objective: Implement Parts Compatibility Agent tool surface
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P4-COMP-028
+  - P2-AGENT-017
+  acceptance:
+  - LLM cannot override compatibility result
+  - agent can explain evidence
+  - wrong-part traps abstain
+  verification:
+  - parts agent evals
+  risk: high
+  human_gate: false
+- id: P4-REQ-030
+  phase: 4
+  area: commerce
+  objective: Create parts request draft flow with human confirmation
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P4-AGENT-029
+  acceptance:
+  - request preserves case/asset context
+  - external write disabled until connector configured
+  - idempotency key generated
+  verification:
+  - E2E parts request
+  risk: medium
+  human_gate: false
+- id: P5-WORKFLOW-031
+  phase: 5
+  area: workflow
+  objective: Implement PostgreSQL-backed workflow/job state with restart-safe approval/wait
+    pattern
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P3-CASE-025
+  acceptance:
+  - pending workflow resumes after application/worker restart
+  - human approval state persists in PostgreSQL
+  - jobs use bounded retries and idempotency keys
+  - no Redis/Temporal dependency introduced
+  verification:
+  - process restart integration test
+  - duplicate execution/idempotency test
+  - approval persistence test
+  risk: high
+  human_gate: false
+- id: P5-WA-032
+  phase: 5
+  area: channel
+  objective: Implement provider-abstracted WhatsApp adapter in sandbox mode
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P5-WORKFLOW-031
+  acceptance:
+  - inbound message mapped to same specialist graph
+  - channel identity mapped safely
+  - outbound sandbox only until credentials/human gate
+  verification:
+  - channel contract tests
+  risk: high
+  human_gate: true
+- id: P5-VISION-033
+  phase: 5
+  area: multimodal
+  objective: Add image upload and nameplate/error-panel extraction with confidence
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P3-ASSET-021
+  - P2-AGENT-017
+  acceptance:
+  - low-confidence extraction requests confirmation
+  - raw image tenant scoped
+  - extracted values retain provenance
+  verification:
+  - vision fixture evals
+  risk: high
+  human_gate: false
+- id: P5-VOICE-034
+  phase: 5
+  area: multimodal
+  objective: Add voice-note transcription into same conversation graph
+  priority: P2
+  status: blocked
+  blocked_by:
+  - P5-WORKFLOW-031
+  acceptance:
+  - technical numbers preserved/confirmed
+  - transcript stored with provenance
+  - language detected
+  verification:
+  - audio fixture tests
+  risk: medium
+  human_gate: false
+- id: P5-MOBILE-035
+  phase: 5
+  area: frontend
+  objective: Build technician mobile/PWA workspace
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P3-CASE-025
+  - P4-AGENT-029
+  acceptance:
+  - scan/select asset
+  - case/evidence/parts usable on narrow viewport
+  - camera/file upload supported
+  verification:
+  - mobile Playwright suite
+  risk: low
+  human_gate: false
+- id: P6-RULES-036
+  phase: 6
+  area: sales
+  objective: Implement versioned calculator/selector tool contract
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P4-COMP-028
+  acceptance:
+  - inputs/units schema validated
+  - result reproducible
+  - tool execution audited
+  verification:
+  - calculator tests
+  risk: high
+  human_gate: false
+- id: P6-SELECT-037
+  phase: 6
+  area: agent
+  objective: Build Product Selection Agent that asks only discriminating requirements
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P6-RULES-036
+  - P2-AGENT-017
+  acceptance:
+  - missing critical input asked before output
+  - recommendation supported by rules/evidence
+  - assumptions explicit
+  verification:
+  - selection evals
+  risk: high
+  human_gate: false
+- id: P6-QUOTE-038
+  phase: 6
+  area: commerce
+  objective: Generate draft technical quote/RFQ artifact with approval gate
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P6-SELECT-037
+  - P5-WORKFLOW-031
+  acceptance:
+  - commercial commit not sent automatically
+  - source configuration attached
+  - approval durable
+  verification:
+  - quote workflow E2E
+  risk: high
+  human_gate: false
+- id: P7-INTERVIEW-039
+  phase: 7
+  area: knowledge
+  objective: Build tribal-knowledge interview graph and candidate extraction
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P5-WORKFLOW-031
+  - P3-FEEDBACK-026
+  acceptance:
+  - asks applicability/exception questions
+  - output is candidate only
+  - source expert/date recorded
+  verification:
+  - interview transcript fixtures
+  risk: high
+  human_gate: false
+- id: P7-CONFLICT-040
+  phase: 7
+  area: knowledge
+  objective: Detect conflicting/stale assertions and route review
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P7-INTERVIEW-039
+  - P2-DOC-011
+  acceptance:
+  - conflict never silently resolved
+  - review shows both evidence sets
+  - affected evals identified
+  verification:
+  - conflict tests
+  risk: high
+  human_gate: false
+- id: P7-COVER-041
+  phase: 7
+  area: analytics
+  objective: Build knowledge coverage-gap dashboard from abstentions/escalations
+  priority: P2
+  status: blocked
+  blocked_by:
+  - P3-CASE-025
+  - P2-EVAL-018
+  acceptance:
+  - clusters failure reasons
+  - links examples/evidence
+  - can create backlog knowledge tasks
+  verification:
+  - analytics tests
+  risk: low
+  human_gate: false
+- id: P8-SSO-042
+  phase: 8
+  area: security
+  objective: Add enterprise SSO behind provider abstraction
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P1-AUTH-004
+  acceptance:
+  - tenant domain mapping safe
+  - role mapping tested
+  - break-glass access audited
+  verification:
+  - SSO sandbox tests
+  risk: high
+  human_gate: true
+- id: P8-SDK-043
+  phase: 8
+  area: integrations
+  objective: Publish typed connector SDK and test harness
+  priority: P1
+  status: blocked
+  blocked_by:
+  - P4-REQ-030
+  acceptance:
+  - read/write/idempotency/health contract documented
+  - sample connector passes contract suite
+  verification:
+  - connector contract suite
+  risk: low
+  human_gate: false
+- id: P8-DR-044
+  phase: 8
+  area: devops
+  objective: Create backup/restore and disaster-recovery exercise
+  priority: P0
+  status: blocked
+  blocked_by:
+  - P1-DB-003
+  - P2-OBJ-010
+  acceptance:
+  - database restore tested
+  - object metadata recovery documented
+  - RPO/RTO measured not guessed
+  verification:
+  - staging DR drill
+  risk: high
+  human_gate: false
+- id: P9-IOT-045
+  phase: 9
+  area: iot
+  objective: Create read-only telemetry ingestion/event model for one validated machine
+    source
+  priority: P2
+  status: blocked
+  blocked_by:
+  - P5-WORKFLOW-031
+  - P3-ASSET-021
+  acceptance:
+  - telemetry linked to exact asset
+  - late/duplicate events handled
+  - no machine control path exists
+  verification:
+  - telemetry replay tests
+  risk: high
+  human_gate: false
+- id: P9-LIFE-046
+  phase: 9
+  area: agent
+  objective: Build proactive lifecycle recommendations from approved schedules/rules
+  priority: P2
+  status: blocked
+  blocked_by:
+  - P9-IOT-045
+  - P4-AGENT-029
+  acceptance:
+  - recommendation traceable to rule/evidence
+  - outreach permission respected
+  - no predictive claim without validated model
+  verification:
+  - lifecycle evals
+  risk: high
+  human_gate: false
+- id: P9-3D-047
+  phase: 9
+  area: frontend
+  objective: Build functional exploded-parts 3D viewer linked to BOM/part graph
+  priority: P3
+  status: blocked
+  blocked_by:
+  - P4-PART-027
+  - P1-3D-008
+  acceptance:
+  - mesh nodes map to part IDs
+  - click exposes evidence/part context
+  - fallback works without WebGL
+  verification:
+  - 3D interaction E2E
+  risk: low
+  human_gate: false
+- id: P9-OFFLINE-048
+  phase: 9
+  area: frontend
+  objective: Prototype offline technician case packet with explicit sync/conflict
+    rules
+  priority: P3
+  status: blocked
+  blocked_by:
+  - P5-MOBILE-035
+  acceptance:
+  - selected packet usable offline
+  - writes queue safely
+  - conflicts visible on reconnect
+  verification:
+  - offline Playwright test
+  risk: high
+  human_gate: false
+scale_later_agent_dictionary:
+- capability: object_storage
+  examples:
+  - S3
+  - R2
+  - MinIO
+  do_not_build_now: true
+  trigger: first real client durable uploads, multi-instance deployment, large media
+    volume, or compliance/backup requirement
+  prepared_boundary: BlobStore
+- capability: shared_cache_and_locks
+  examples:
+  - Redis
+  do_not_build_now: true
+  trigger: multiple app instances or measured cache/distributed-lock/rate-limit need
+  prepared_boundary: Cache/Lock adapter
+- capability: dedicated_queue
+  examples:
+  - BullMQ
+  - Redis queue
+  do_not_build_now: true
+  trigger: measured Postgres job backlog/throughput bottleneck
+  prepared_boundary: JobRunner
+- capability: durable_workflow_engine
+  examples:
+  - Temporal
+  do_not_build_now: true
+  trigger: multi-hour/day cross-system workflows with many callbacks/approvals become
+    difficult or risky to maintain in DB state machine
+  prepared_boundary: WorkflowStore
+- capability: event_streaming
+  examples:
+  - Kafka
+  - Redis Streams
+  do_not_build_now: true
+  trigger: high event volume plus multiple independent consumers/replay requirement
+  prepared_boundary: transactional outbox
+- capability: separate_vector_database
+  examples:
+  - specialist vector DB
+  do_not_build_now: true
+  trigger: pgvector measured as a production bottleneck
+  prepared_boundary: retrieval interface
+- capability: kubernetes_microservices
+  examples:
+  - Kubernetes
+  do_not_build_now: true
+  trigger: team ownership or independent scaling/deployment requirements justify it
+  prepared_boundary: modular monolith boundaries

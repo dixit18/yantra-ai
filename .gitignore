@@ -1,0 +1,34 @@
+# Secrets - never commit (GitHub push protection is a backstop, not the plan)
+.env
+.env.*
+!.env.example
+token-test.txt
+token*.txt
+*token*.txt
+*.pem
+*.key
+*.p12
+
+# Neon local context (may contain project linkage)
+.neon/
+.neon-dev/
+
+# Deps
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.next/
+out/
+.turbo/
+
+# Data / uploads (local BlobStore root)
+data/uploads/
+data/*
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
