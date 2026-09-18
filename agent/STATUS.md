@@ -12,6 +12,9 @@
   `@neon/config` dep not yet installed — wired at P1-REPO-001).
 - Critic: `agent/CRITIC.md` + `.opencode/agent/critic.md` active; mandatory
   pre-done gate.
+- GitHub: `dixit18/yantra-ai` (public), `main` pushed (aa10486);
+  `.env` + live PAT file gitignored, verified absent from `git ls-files` and
+  history; remote URL carries no token.
 - Next ready: P1-REPO-001 (monorepo bootstrap) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
