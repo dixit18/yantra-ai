@@ -25,3 +25,5 @@ export { EMBEDDING_DIMENSIONS, toVectorLiteral } from './embeddings.js';
 export type { Embedder } from './embeddings.js';
 
 export * from './segments.js';
+
+export * from './citations.js';

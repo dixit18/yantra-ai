@@ -127,7 +127,12 @@
   superseded exclusion, persisted retrieval_event. Verified live with 4 golden
   queries (exact part hit, superseded hide/show, allowlist + foreign-scope
   deny, cross-tenant empty) + stored trace row; zero litter.
-- Ready next: P2-CITE-016 (citation renderer) per
+- P2-CITE-016 DONE 2026-09-18: tenant-scoped citation resolution + rendering,
+  expiring HMAC source URLs, bytes API (uniform 404, no oracle), viewer page
+  with native-PDF page fragment. Verified: build 15/15, typecheck 23/23, lint
+  15/15, test 23/23, format clean, e2e 21/21 with secrets (20 + 1 skip
+  without); zero litter.
+- Ready next: P2-AGENT-017 (specialist graph) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

@@ -15,7 +15,8 @@
     "e2e": {
       "dependsOn": ["build"],
       "outputs": ["playwright-report/**", "test-results/**"],
-      "cache": false
+      "cache": false,
+      "passThroughEnv": ["DATABASE_URL", "APP_SECRET"]
     },
     "dev": {
       "persistent": true,

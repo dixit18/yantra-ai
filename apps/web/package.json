@@ -14,17 +14,24 @@
   },
   "dependencies": {
     "@yantra/3d": "workspace:*",
+    "@yantra/auth": "workspace:*",
+    "@yantra/blobstore": "workspace:*",
+    "@yantra/db": "workspace:*",
+    "@yantra/knowledge": "workspace:*",
     "@yantra/ui": "workspace:*",
     "next": "catalog:",
+    "pg": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
     "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "eslint": "catalog:",
+    "pdf-lib": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

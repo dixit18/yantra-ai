@@ -195,4 +195,15 @@
   query_text stays verbatim (not scrubbed) because eval replay and debugging
   need the exact query — control is retention per tenant retention_policy
   (future TTL job), not redaction, which would destroy reproducibility.
+- 2026-09-18 (P2-CITE-016): presigned-URL pattern for bytes (browser viewers
+  send no auth); uniform 404s everywhere (no oracle); turbo passThroughEnv
+  for e2e secrets (never hashed into cache); e2e splits negative-always from
+  positive-with-DB (skipped in CI); e2e blobs must live under the server's
+  blob root (found via 404, not review); Next 16 route types live in
+  next/server.
+- 2026-09-18 (P2-CITE-016 hardening, critic BLOCKED→fixed): bytes serve with
+  an inline allowlist (else octet-stream) + CSP sandbox + no-store (private
+  caches must not outlive URL expiry); viewer pages send Referrer-Policy:
+  no-referrer; URL bearers accepted as demo-only risk (15-min TTL, server
+  logs out of scope) until cookie sessions land with console auth.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
