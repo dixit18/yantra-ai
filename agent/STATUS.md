@@ -45,7 +45,13 @@
   format clean; live Neon → 0001-0003 applied, seed twice (same ids,
   created true→false), cross-tenant junction rejected, audit update/delete
   rejected, tenant-with-history rejected, zero new litter (9→9 tenants).
-- Ready next: P1-AUTH-004 (P0, phase order over P3-CAT-020), then P1-OBS-005,
-  P1-UI-006, P1-CICD-009 per `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
+- P1-AUTH-004 DONE 2026-09-18: HMAC request tokens (timing-safe verify, expiry),
+  DB-loaded permissions (never in token), token-tenant re-check, throwing
+  guards (`requirePermission`, `requireSameTenant`), framework-agnostic
+  `authenticateRequest`. Verified: build 14/14, typecheck 18/18, lint 14/14,
+  test 18/18, format clean; live adversarial → authenticate + 4 codes,
+  cross-tenant/permission/forged/spoofed denials, zero litter (0 demo-auth rows).
+- Ready next: P1-CICD-009 (last P0), then P1-OBS-005 / P1-UI-006 per
+  `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

@@ -86,4 +86,9 @@
   Known dev-db litter: 4 clearly-named demo-test pairs from the debugging era
   are now unerasable via app paths (by design); reap plan is a superuser
   direct connection, not app code.
+- 2026-09-18 (P1-AUTH-004): HMAC-SHA256 bearer tokens (`y1.` prefix) over
+  session tables — no credential storage exists yet by design; permissions
+  load from DB per request and the token tenant is re-checked against the user
+  row; guards throw (uncallable-to-forget); live tests use a throwaway secret,
+  never APP_SECRET.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
