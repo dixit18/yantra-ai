@@ -167,4 +167,19 @@
   (no structural evidence — claiming row zero mislabels); duplicate headers
   preserved verbatim (dedup belongs to ingestion, not parsing); CSV delimiter
   detected, BOM stripped, unclosed quotes rejected; OLE magic → encrypted.
+- 2026-09-18 (P2-EMBED-014): vector(1536) to match text-embedding-3-small so
+  the real provider drops in schema-free; HashEmbedder is dev/test-only (no
+  semantics); search has no unscoped path by construction; production
+  embeddings wait on MODEL_API_KEY (human gate).
+- 2026-09-18 (P2-EMBED-014 hardening, critic NEEDS-WORK→fixed): HashEmbedder
+  kept out of the barrel (tests import the module directly); re-index holds a
+  per-version advisory lock with an explicit pairing check (proven by a
+  concurrent double-index coherence test); exclusion ids UUID-validated with
+  ::uuid[] cast; checksum gaps fail instead of backfilling; savepoints carry
+  the version name; HNSW recall revisit past ~100k segments/tenant.
+- 2026-09-18 (migrate hardening): one outer transaction + savepoints +
+  xact-scoped lock — pool.query multi-statement transactions silently split
+  across pooler sessions, proven by a concurrent-DDL failure; the advisory
+  lock only holds inside a pinned transaction. Concurrent 5-package live rerun
+  green as proof.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

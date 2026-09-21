@@ -63,16 +63,17 @@ describe('migrate', () => {
     const fresh = await migrate(async () => conn, dir);
     expect(fresh).toEqual(['0001_first', '0002_second']);
     expect(conn.log.slice(0, 4)).toEqual([
-      expect.stringContaining('pg_advisory_lock'),
+      'begin',
+      expect.stringContaining('pg_advisory_xact_lock'),
       expect.stringContaining('create table if not exists schema_migrations'),
       expect.stringContaining('add column if not exists checksum'),
-      expect.stringContaining('select version, checksum'),
     ]);
-    expect(conn.log).toContain('begin');
+    expect(conn.log).toContain('savepoint mig_0001_first');
     expect(conn.log).toContain(
       `insert into schema_migrations (version, checksum) values ($1, $2) [0001_first,${checksum('select 1')}]`,
     );
-    expect(conn.log[conn.log.length - 1]).toContain('pg_advisory_unlock');
+    expect(conn.log).toContain('release savepoint mig_0001_first');
+    expect(conn.log[conn.log.length - 1]).toBe('commit');
     expect(conn.released).toBe(true);
   });
 
@@ -80,16 +81,14 @@ describe('migrate', () => {
     const dir = await dirWith({ '0001_first.sql': 'select 1' });
     const conn = fakeConn([['0001_first', checksum('select 1')]]);
     await expect(migrate(async () => conn, dir)).resolves.toEqual([]);
-    expect(conn.log.some((s) => s === 'begin')).toBe(false);
+    expect(conn.log.some((s) => s.startsWith('savepoint'))).toBe(false);
   });
 
-  it('backfills a missing checksum instead of reapplying', async () => {
+  it('refuses to bless a missing checksum instead of backfilling', async () => {
     const dir = await dirWith({ '0001_first.sql': 'select 1' });
     const conn = fakeConn([['0001_first', null]]);
-    await expect(migrate(async () => conn, dir)).resolves.toEqual([]);
-    expect(conn.log).toContain(
-      `update schema_migrations set checksum = $1 where version = $2 [${checksum('select 1')},0001_first]`,
-    );
+    await expect(migrate(async () => conn, dir)).rejects.toThrow(/no recorded checksum/);
+    expect(conn.log.some((s) => s.startsWith('savepoint'))).toBe(false);
   });
 
   it('refuses silently edited migrations', async () => {
@@ -103,8 +102,8 @@ describe('migrate', () => {
     const dir = await dirWith({ '0001_bad.sql': 'select nope' });
     const conn = fakeConn([], 'select nope');
     await expect(migrate(async () => conn, dir)).rejects.toThrow(/migration 0001_bad failed: boom/);
-    expect(conn.log).toContain('rollback');
-    expect(conn.log[conn.log.length - 1]).toContain('pg_advisory_unlock');
+    expect(conn.log).toContain('rollback to savepoint mig_0001_bad');
+    expect(conn.log[conn.log.length - 1]).toBe('rollback');
     expect(conn.applied.has('0001_bad')).toBe(false);
     expect(conn.released).toBe(true);
   });
@@ -131,6 +130,7 @@ describe('discoverMigrations', () => {
       '0007_document_guards',
       '0008_supersede_order',
       '0009_transition_contract',
+      '0010_segments',
     ]);
     expect(files[0]?.sql ?? '').toContain('create table tenant');
   });

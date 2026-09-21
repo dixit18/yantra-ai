@@ -17,3 +17,11 @@ export * from './documents.js';
 export * from './pdf.js';
 
 export * from './spreadsheet.js';
+
+// HashEmbedder is deliberately NOT re-exported: it is a test/dev stand-in
+// with no semantics (see embeddings.ts). Tests import it from the module
+// directly; production code cannot stumble into it through the barrel.
+export { EMBEDDING_DIMENSIONS, toVectorLiteral } from './embeddings.js';
+export type { Embedder } from './embeddings.js';
+
+export * from './segments.js';

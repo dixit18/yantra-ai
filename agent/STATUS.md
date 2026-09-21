@@ -110,7 +110,19 @@
   headers, text+typed cells) + owned CSV parser (fidelity-first, no numeric
   coercion) + token normalizer + async entries. Verified: build 15/15,
   typecheck 21/21, lint 15/15, test 21/21, format clean.
-- Ready next: P2-EMBED-014 (embedding pipeline) per
+- P2-EMBED-014 DONE 2026-09-18: `document_segment` (`0010`, vector(1536) +
+  HNSW, composite tenant FKs), HashEmbedder (deterministic stand-in, 1536d),
+  replace-whole indexVersionSegments, tenant-mandatory searchSimilar with
+  version exclusion. Hardened per critic NEEDS-WORK: fake out of the barrel,
+  per-version index locks + pairing check, UUID-validated exclusion, strict
+  checksums, versioned savepoints. Verified live incl. concurrent re-index
+  coherence. Verified live: exact-vector first at ~0 distance, decoy
+  isolation, re-index replacement, exclusion, guards; 5-package concurrent
+  live run all green with zero new litter.
+- migrate() restructured (single outer txn + savepoints + xact lock) after a
+  concurrent-DDL failure proved pool.query multi-statement transactions break
+  under PgBouncer — full-concurrency rerun green.
+- Ready next: P2-HYBRID-015 (hybrid retrieval) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).
