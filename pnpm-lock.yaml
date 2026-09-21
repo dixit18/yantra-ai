@@ -294,6 +294,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@yantra/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       pg:
         specifier: 'catalog:'
         version: 8.23.0

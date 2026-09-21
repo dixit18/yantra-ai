@@ -68,4 +68,22 @@
   without secrets; validation errors and bootstrap status never carry
   credential values (asserted in tests); scale-later absence is a unit test,
   not a wiki promise.
+- 2026-09-18 (P1-DB-003): owned migration runner over node-pg-migrate
+  (ordering + per-file transactions + tracking fits one review; constraint is
+  transaction-safe SQL only); SELECT-first seed over the `xmax = 0` trick (no
+  lore, obviously correct); live integration tests use unique slugs + cleanup
+  against the real Neon db (the schema belongs there); `audit_event` is
+  append-only with no update path; reruns append one `tenant.seeded` row by
+  design. Tie-break P1-AUTH-004 over P3-CAT-020: phase order.
+- 2026-09-18 (P1-DB-003 hardening, critic BLOCKED→fixed): 0002 adds composite
+  FKs closing the cross-tenant user_role hole + audit append-only trigger
+  (tenant_id stays nullable for global events — explicit exception); 0003 swaps
+  audit FKs to RESTRICT after the trigger broke SET NULL fan-out (discovered
+  live); migrate() gains advisory lock + sha256 checksums with backfill;
+  seed runs in one transaction via connect(); Neon pooler denies replica role,
+  so test graphs are litter-free by construction (audit:false seeds, rollback
+  probes, demo-tenant restrict probe) — verified 9 tenants before/after a run.
+  Known dev-db litter: 4 clearly-named demo-test pairs from the debugging era
+  are now unerasable via app paths (by design); reap plan is a superuser
+  direct connection, not app code.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

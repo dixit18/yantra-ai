@@ -14,3 +14,7 @@ export function databaseScheme(url: string): string {
 }
 
 export * from './check.js';
+
+export * from './migrate.js';
+
+export * from './seed.js';

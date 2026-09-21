@@ -36,7 +36,16 @@
   vector 0.8.6, server PostgreSQL 18.6 (redacted host only, zero secrets logged).
 - Platform tasks queue behind this gate (owner order); next: P1-DB-003 (tenant
   schema + migrations, now unblocked).
-- Ready next: P1-DB-003, P1-OBS-005, P1-UI-006, P1-CICD-009 per
-  `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
+- P1-DB-003 DONE 2026-09-18: tenant/app_user/role/permission/user_role/
+  role_permission/audit_event schema (`0001_init`), owned migration runner
+  (ordered, transactional, tracked, advisory-locked, checksummed), idempotent
+  secret-free demo seed, `db migrate [-- --seed]` CLI. Hardened per critic:
+  0002 composite junction FKs + audit trigger, 0003 audit RESTRICT, seed in one
+  transaction. Verified: build 14/14, typecheck 18/18, lint 14/14, test 18/18,
+  format clean; live Neon → 0001-0003 applied, seed twice (same ids,
+  created true→false), cross-tenant junction rejected, audit update/delete
+  rejected, tenant-with-history rejected, zero new litter (9→9 tenants).
+- Ready next: P1-AUTH-004 (P0, phase order over P3-CAT-020), then P1-OBS-005,
+  P1-UI-006, P1-CICD-009 per `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

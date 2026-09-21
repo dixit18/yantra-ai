@@ -3,7 +3,7 @@
 import { Pool } from 'pg';
 
 export type QueryRow = Record<string, unknown>;
-export type QueryFn = (sql: string) => Promise<{ rows: QueryRow[] }>;
+export type QueryFn = (sql: string, params?: unknown[]) => Promise<{ rows: QueryRow[] }>;
 
 export interface DatabaseHealth {
   reachable: boolean;
@@ -35,16 +35,19 @@ export interface PostgresHandle {
   close: () => Promise<void>;
 }
 
+export const POSTGRES_POOL_OPTIONS = {
+  max: 2,
+  connectionTimeoutMillis: 10_000,
+  query_timeout: 8_000,
+  statement_timeout: 5_000,
+};
+
 export function createPostgresQuery(connectionString: string): PostgresHandle {
-  const pool = new Pool({
-    connectionString,
-    max: 2,
-    connectionTimeoutMillis: 10_000,
-    query_timeout: 8_000,
-    statement_timeout: 5_000,
-  });
+  const pool = new Pool({ connectionString, ...POSTGRES_POOL_OPTIONS });
   return {
-    query: async (sql: string) => ({ rows: (await pool.query(sql)).rows as QueryRow[] }),
+    query: async (sql: string, params?: unknown[]) => ({
+      rows: (await pool.query(sql, params)).rows as QueryRow[],
+    }),
     close: () => pool.end(),
   };
 }
