@@ -118,4 +118,16 @@
   unbuilt capabilities; security page states non-claims explicitly (no fake
   badges); contact form validates locally and declares it sends nothing —
   validation without a backend is the honest maximum until connectors exist.
+- 2026-09-18 (P2-OBJ-010): BlobStore interface with local impl (file-first
+  writes, `wx` no-clobber, EEXIST-shared dedupe, race-resilient insert);
+  node-postgres returns int8/timestamptz as strings — rowToRef coerces then
+  validates (pinned by unit test); same-bytes/different-tenant are separate
+  rows by design (no cross-tenant existence leak); knowledge layers depend on
+  the interface for the future object-store swap.
+- 2026-09-18 (P2-OBJ-010 hardening, critic BLOCKED→fixed): read-path hash+size
+  verification; 10 MB default cap (constructor-liftable); filename control
+  stripping (NUL kills pg text protocol); tenant case-folded directories;
+  0005 CHECK constraints as defense in depth; control-char class built from
+  char codes (no-control-regex); orphan files on crash noted as bounded GC
+  work (content-addressed, invisible).
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

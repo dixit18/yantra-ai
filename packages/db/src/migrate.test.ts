@@ -125,6 +125,8 @@ describe('discoverMigrations', () => {
       '0001_init',
       '0002_junction_guards',
       '0003_audit_restrict',
+      '0004_blob_files',
+      '0005_blob_checks',
     ]);
     expect(files[0]?.sql ?? '').toContain('create table tenant');
   });

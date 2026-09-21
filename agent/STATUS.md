@@ -79,7 +79,15 @@
   anchor proof, repo-linked security claims (e2e 17/17).
   Note: P1-3D-008's acceptance is exceeded by the shipped 3D pipeline —
   recommend marking it done in the backlog.
-- Ready next: P2-OBJ-010 (tenant BlobStore) per
+- P2-OBJ-010 DONE 2026-09-18: `BlobStore` interface + `LocalFileBlobStore`
+  (opaque ids, content-addressed layout, tenant-scoped dedupe, no path escape,
+  no cross-tenant oracle) + `0004_blob_files` registry. Verified: build 15/15,
+  typecheck 20/20, lint 15/15, test 20/20, format clean; live → roundtrip,
+  dedupe (1 row), per-tenant isolation, traversal rejected, inconsistency
+  detected, zero litter (0 demo-blob rows/tenants). Hardened per critic
+  BLOCKED round: read-path hash verify, size cap, filename sanitize,
+  case-folded dirs, 0005 CHECKs.
+- Ready next: P2-DOC-011 (document lifecycle) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).
