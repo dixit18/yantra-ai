@@ -142,6 +142,42 @@
   font-size: 0.95rem;
 }
 
+.form-field {
+  margin-bottom: 1.1rem;
+  max-width: 34rem;
+}
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+
+.form-field input,
+.form-field textarea {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--graphite);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.form-field input:focus-visible,
+.form-field textarea:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.form-error {
+  margin: 0.4rem 0 0;
+  color: var(--danger);
+  font-size: 0.88rem;
+}
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;

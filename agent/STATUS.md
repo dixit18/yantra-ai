@@ -70,7 +70,16 @@
   by web (layout, page, hero). Verified: build 14/14, typecheck 19/19, lint
   14/14, test 19/19, format clean, e2e 9/9 (5 hero + 4 shell: landmarks, skip
   link, visible focus, nav), screenshot-reviewed, zero page errors.
-- Ready next: P1-WEB-007 (marketing pages) per
+- P1-WEB-007 DONE 2026-09-18: home narrative (problem, governance, lanes,
+  knowledge, pilot), /product, /security (risk classes, controls, honest
+  non-claims), /contact with validating demo-only form. Verified: build 14/14,
+  typecheck 19/19, lint 14/14, test 19/19, format clean, e2e 16/16 (routes,
+  validation, no-JS core, mobile), screenshots reviewed, zero page errors.
+  Hardened per critic PASS round: a11y linkage, noscript fallback, cross-page
+  anchor proof, repo-linked security claims (e2e 17/17).
+  Note: P1-3D-008's acceptance is exceeded by the shipped 3D pipeline —
+  recommend marking it done in the backlog.
+- Ready next: P2-OBJ-010 (tenant BlobStore) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

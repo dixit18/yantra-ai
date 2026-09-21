@@ -35,12 +35,12 @@ test('keyboard focus is always visible', async ({ page }) => {
   expect(outline).not.toBe('none');
 });
 
-test('primary nav reaches page sections', async ({ page }) => {
+test('primary nav reaches product page', async ({ page }) => {
   await page.goto('/');
   await page
     .getByRole('navigation', { name: 'Primary' })
-    .getByRole('link', { name: 'Problem' })
+    .getByRole('link', { name: 'Product' })
     .click();
-  await expect(page).toHaveURL(/#problem$/);
-  await expect(page.getByRole('heading', { name: /expensive part/i })).toBeVisible();
+  await expect(page).toHaveURL(/\/product$/);
+  await expect(page.getByRole('heading', { name: /cites its sources/i })).toBeVisible();
 });

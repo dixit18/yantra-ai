@@ -114,4 +114,8 @@
   (single instance via webpack symlink dedupe); page CSS holds composition
   only; components pure for shared SSR/test path; token↔CSS sync test guards
   drift.
+- 2026-09-18 (P1-WEB-007): 4 routes with spec-grounded copy; roadmap chips on
+  unbuilt capabilities; security page states non-claims explicitly (no fake
+  badges); contact form validates locally and declares it sends nothing —
+  validation without a backend is the honest maximum until connectors exist.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
