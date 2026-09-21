@@ -127,6 +127,10 @@ describe('discoverMigrations', () => {
       '0003_audit_restrict',
       '0004_blob_files',
       '0005_blob_checks',
+      '0006_documents',
+      '0007_document_guards',
+      '0008_supersede_order',
+      '0009_transition_contract',
     ]);
     expect(files[0]?.sql ?? '').toContain('create table tenant');
   });

@@ -87,7 +87,22 @@
   detected, zero litter (0 demo-blob rows/tenants). Hardened per critic
   BLOCKED round: read-path hash verify, size cap, filename sanitize,
   case-folded dirs, 0005 CHECKs.
-- Ready next: P2-DOC-011 (document lifecycle) per
+- P2-DOC-011 DONE 2026-09-18: document/version tables (`0006`, composite tenant
+  FK, CHECK-bounded states), validated state machine + atomic replaceVersion,
+  blob-linked immutable versions. Hardened per critic BLOCKED round: 0007
+  composite blob FK + transition/immutability trigger, 0008 fixing the
+  succession check the first version locked out (link lives on the new row —
+  the guard itself proved it live). Verified: build 15/15, typecheck 21/21,
+  lint 15/15, test 21/21, format clean; live → 0001-0008 applied, illegal
+  jumps + direct-SQL bypasses + cross-tenant pointer rejected, supersession
+  links/timestamps correct, zero litter. Follow-ups closed: 0009 re-records the
+  guard with its machine-readable contract (anti-drift test requires all
+  definitions to agree), blob GC policy recorded. Live evidence 2026-09-18:
+  `select version from schema_migrations` →
+  0001_init, 0002_junction_guards, 0003_audit_restrict, 0004_blob_files,
+  0005_blob_checks, 0006_documents, 0007_document_guards, 0008_supersede_order,
+  0009_transition_contract; `select count(*) … where slug like 'demo-doc-%'` → 0.
+- Ready next: P2-PARSE-012 (PDF parser) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

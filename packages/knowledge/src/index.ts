@@ -1,4 +1,4 @@
-// P1-REPO-001 seed for P2-DOC-011 — supersession predicate over effective dates.
+// P2-DOC-011 — document/version lifecycle (state machine, supersession).
 // Retrieval must exclude superseded versions; conflicts abstain (master spec §10.6).
 export interface VersionWindow {
   effectiveFrom?: string;
@@ -11,3 +11,5 @@ export function isSupersededAt(version: VersionWindow, at: Date = new Date()): b
   }
   return new Date(version.effectiveTo).getTime() <= at.getTime();
 }
+
+export * from './documents.js';

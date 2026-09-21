@@ -130,4 +130,18 @@
   0005 CHECK constraints as defense in depth; control-char class built from
   char codes (no-control-regex); orphan files on crash noted as bounded GC
   work (content-addressed, invisible).
+- 2026-09-18 (P2-DOC-011 hardening, critic BLOCKED→fixed): trigger enforces
+  content immutability + the legal graph with a machine-readable
+  LEGAL-TRANSITIONS comment (unit test pins TS map to it; approved→superseded
+  exists only with a live successor link); 0008 corrected 0007's link check
+  via a new migration, never an edit (checksum discipline held under pressure);
+  chains (v1→v2→v3) are legitimate succession, only self-supersede is banned;
+  blob orphans on document delete are inert + bounded (GC later, documented).
+- 2026-09-18 (blob GC policy): orphan blobs (no referencing versions) are
+  retained, invisible, and content-addressed; owner: platform; reaping is a
+  future dry-run-first `blob:gc` job (list unreferenced sha, delete files then
+  rows after a grace window), per-tenant and global scope; trigger for building
+  it is measured multi-GB growth or the first compliance request — growth
+  alone is not the trigger.
+- TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
