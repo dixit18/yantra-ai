@@ -73,4 +73,23 @@ describe('searchSimilar guards', () => {
     ).rejects.toThrow(/invalid version id/);
     expect(queried).toBe(false);
   });
+
+  it('pushes version and kind scopes into SQL', async () => {
+    const seen: string[] = [];
+    const query = async (sql: string) => {
+      seen.push(sql);
+      return { rows: [] };
+    };
+    await searchSimilar(query, {
+      tenantId: 't-1',
+      embedding: VECTOR,
+      topK: 5,
+      versionIds: ['11111111-1111-1111-1111-111111111111'],
+      kinds: ['table'],
+    });
+    const sql = seen.join('\n');
+    expect(sql).toContain('document_version_id = any($');
+    expect(sql).toContain('::uuid[]');
+    expect(sql).toContain('kind = any($');
+  });
 });

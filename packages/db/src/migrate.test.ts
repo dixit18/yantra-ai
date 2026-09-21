@@ -131,6 +131,8 @@ describe('discoverMigrations', () => {
       '0008_supersede_order',
       '0009_transition_contract',
       '0010_segments',
+      '0011_retrieval_events',
+      '0012_retrieval_guards',
     ]);
     expect(files[0]?.sql ?? '').toContain('create table tenant');
   });

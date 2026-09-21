@@ -17,7 +17,13 @@ import {
 } from '@yantra/db';
 import { HashEmbedder } from './embeddings.js';
 import { indexVersionSegments, searchSimilar } from './segments.js';
-import { createDocument, createDocumentVersion } from './documents.js';
+import {
+  createDocument,
+  createDocumentVersion,
+  replaceVersion,
+  transitionVersion,
+} from './documents.js';
+import { hybridSearch } from './retrieval.js';
 
 describe.skipIf(!process.env['DATABASE_URL'])('retrieval (live pgvector)', () => {
   it('indexes, scopes, re-indexes, and excludes versions', async () => {
@@ -205,6 +211,179 @@ describe.skipIf(!process.env['DATABASE_URL'])('retrieval (live pgvector)', () =>
       });
       expect(coherent).toHaveLength(1);
       expect(['concurrent alpha', 'concurrent beta']).toContain(coherent[0]?.text);
+    } finally {
+      try {
+        if (tenantIds.length > 0) {
+          await query(
+            `delete from document_version where document_id in
+               (select id from document where tenant_id = any($1))`,
+            [tenantIds],
+          );
+          await query('delete from document where tenant_id = any($1)', [tenantIds]);
+          await query('delete from tenant where id = any($1)', [tenantIds]);
+        }
+        await rm(root, { recursive: true, force: true });
+      } finally {
+        await pool.end();
+      }
+    }
+  }, 180_000);
+
+  it('answers golden queries with exact tokens, scopes, and traces', async () => {
+    const pool = new Pool({
+      connectionString: process.env['DATABASE_URL'] as string,
+      ...POSTGRES_POOL_OPTIONS,
+    });
+    const query = async (sql: string, params?: unknown[]) => ({
+      rows: (await pool.query(sql, params)).rows as QueryRow[],
+    });
+    const connect = async () => {
+      const client = await pool.connect();
+      return {
+        query: async (sql: string, params?: unknown[]) => ({
+          rows: (await client.query(sql, params)).rows as QueryRow[],
+        }),
+        release: () => client.release(),
+      };
+    };
+    const root = await mkdtemp(join(tmpdir(), 'yantra-hyb-live-'));
+    const store = new LocalFileBlobStore(root, query);
+    const embedder = new HashEmbedder();
+    const stamp = Date.now().toString(36);
+    const tenantIds: string[] = [];
+    try {
+      await migrate(connect, defaultMigrationsDir());
+      const tenant = await seedDemoTenant(connect, `demo-hyb-${stamp}`, { audit: false });
+      const other = await seedDemoTenant(connect, `demo-hyb-b-${stamp}`, { audit: false });
+      tenantIds.push(tenant.tenantId, other.tenantId);
+
+      const putDoc = async (text: string, label: string) => {
+        const blob = await store.put(tenant.tenantId, new TextEncoder().encode(text), {
+          filename: `${label}.pdf`,
+        });
+        const doc = await createDocument(query, {
+          tenantId: tenant.tenantId,
+          sourceType: 'pdf',
+          title: label,
+        });
+        return { doc, blob };
+      };
+      const oldText = 'obsolete seal procedure, do not follow';
+      const newText = 'SEAL-204 torque 45Nm in three passes';
+      const { doc } = await putDoc(newText, 'Torque Guide');
+      const blobOld = await store.put(tenant.tenantId, new TextEncoder().encode(oldText), {
+        filename: 'old.pdf',
+      });
+      const vOld = await createDocumentVersion(query, {
+        tenantId: tenant.tenantId,
+        documentId: doc.id,
+        versionLabel: 'v1',
+        blobFileId: blobOld.fileId,
+      });
+      const vNew = await createDocumentVersion(query, {
+        tenantId: tenant.tenantId,
+        documentId: doc.id,
+        versionLabel: 'v2',
+        blobFileId: (
+          await store.put(tenant.tenantId, new TextEncoder().encode(newText), {
+            filename: 'new.pdf',
+          })
+        ).fileId,
+      });
+      for (const v of [vOld, vNew]) {
+        await transitionVersion(query, {
+          tenantId: tenant.tenantId,
+          versionId: v.id,
+          to: 'in_review',
+        });
+        await transitionVersion(query, {
+          tenantId: tenant.tenantId,
+          versionId: v.id,
+          to: 'approved',
+        });
+      }
+      const [oldVec, newVec] = await embedder.embed([oldText, newText]);
+      await indexVersionSegments(connect, {
+        tenantId: tenant.tenantId,
+        documentId: doc.id,
+        versionId: vOld.id,
+        segments: [
+          { page: 1, sectionPath: ['Old'], kind: 'text', text: oldText, embedding: oldVec ?? [] },
+        ],
+      });
+      await indexVersionSegments(connect, {
+        tenantId: tenant.tenantId,
+        documentId: doc.id,
+        versionId: vNew.id,
+        segments: [
+          {
+            page: 1,
+            sectionPath: ['Torque'],
+            kind: 'text',
+            text: newText,
+            embedding: newVec ?? [],
+          },
+        ],
+      });
+      await replaceVersion(connect, {
+        tenantId: tenant.tenantId,
+        oldVersionId: vOld.id,
+        newVersionId: vNew.id,
+      });
+
+      // Golden 1: exact part number resolves with evidence first.
+      const exact = await hybridSearch(query, {
+        tenantId: tenant.tenantId,
+        queryText: 'What torque for SEAL-204?',
+        embedder,
+      });
+      expect(exact.tokens).toContain('SEAL-204');
+      expect(exact.hits[0]?.text).toContain('SEAL-204');
+      expect(['exact', 'both']).toContain(exact.hits[0]?.origin);
+      const trace = await query('select * from retrieval_event where id = $1', [exact.traceId]);
+      expect(trace.rows).toHaveLength(1);
+      expect(trace.rows[0]?.['query_text']).toContain('SEAL-204');
+      expect(trace.rows[0]?.['normalized_tokens']).toContain('SEAL-204');
+
+      // Golden 2: superseded content stays out unless explicitly included.
+      const hidden = await hybridSearch(query, {
+        tenantId: tenant.tenantId,
+        queryText: 'obsolete seal procedure, do not follow',
+        embedder,
+      });
+      expect(hidden.hits.map((h) => h.text)).not.toContain(oldText);
+      const shown = await hybridSearch(query, {
+        tenantId: tenant.tenantId,
+        queryText: 'obsolete seal procedure, do not follow',
+        embedder,
+        includeSuperseded: true,
+      });
+      expect(shown.hits.map((h) => h.text)).toContain(oldText);
+
+      // Golden 3: version allowlists scope; foreign scopes are rejected.
+      const scoped = await hybridSearch(query, {
+        tenantId: tenant.tenantId,
+        queryText: 'SEAL-204',
+        embedder,
+        versionIds: [vNew.id],
+      });
+      expect(scoped.hits.every((h) => h.versionId === vNew.id)).toBe(true);
+      await expect(
+        hybridSearch(query, {
+          tenantId: other.tenantId,
+          queryText: 'SEAL-204',
+          embedder,
+          versionIds: [vNew.id],
+        }),
+      ).rejects.toThrow(/outside the tenant/);
+
+      // Golden 4: another tenant sees none of this.
+      const foreign = await hybridSearch(query, {
+        tenantId: other.tenantId,
+        queryText: 'What torque for SEAL-204?',
+        embedder,
+      });
+      expect(foreign.hits).toEqual([]);
     } finally {
       try {
         if (tenantIds.length > 0) {

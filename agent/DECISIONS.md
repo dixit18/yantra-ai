@@ -182,4 +182,17 @@
   across pooler sessions, proven by a concurrent-DDL failure; the advisory
   lock only holds inside a pinned transaction. Concurrent 5-package live rerun
   green as proof.
+- 2026-09-18 (P2-HYBRID-015): exact-first deterministic merge (no learned
+  ranker in MVP); version allowlists tenant-checked (foreign scope denied, not
+  emptied); product-model scoping waits for P3-CAT-020; recall@k golden evals
+  wait for the production embedder (P2-EVAL-018).
+- 2026-09-18 (P2-HYBRID-015 hardening, critic NEEDS-WORK→fixed): exact match
+  uses position() substring, not LIKE — LIKE..ANY accepts no ESCAPE clause
+  (found live, not in review), and position needs no wildcard escaping at all;
+  corroborated hits rank first with real vector distance; vector path takes
+  the same version/kind scope in SQL (post-filter is a safety net only).
+- 2026-09-18 (0012 retrieval guards): top_k CHECK 1–50 mirrors the code bound;
+  query_text stays verbatim (not scrubbed) because eval replay and debugging
+  need the exact query — control is retention per tenant retention_policy
+  (future TTL job), not redaction, which would destroy reproducibility.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

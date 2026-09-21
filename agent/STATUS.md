@@ -122,7 +122,12 @@
 - migrate() restructured (single outer txn + savepoints + xact lock) after a
   concurrent-DDL failure proved pool.query multi-statement transactions break
   under PgBouncer — full-concurrency rerun green.
-- Ready next: P2-HYBRID-015 (hybrid retrieval) per
+- P2-HYBRID-015 DONE 2026-09-18: hybridSearch (tenant→version→exact→vector→merge
+  →trace), token extraction with LIKE-escaping, version-scope tenant check,
+  superseded exclusion, persisted retrieval_event. Verified live with 4 golden
+  queries (exact part hit, superseded hide/show, allowlist + foreign-scope
+  deny, cross-tenant empty) + stored trace row; zero litter.
+- Ready next: P2-CITE-016 (citation renderer) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

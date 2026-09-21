@@ -141,6 +141,8 @@ export async function searchSimilar(
     embedding: number[];
     topK: number;
     excludeVersionIds?: string[];
+    versionIds?: string[];
+    kinds?: string[];
   },
 ): Promise<SimilarSegment[]> {
   if (!Number.isInteger(args.topK) || args.topK <= 0 || args.topK > 100) {
@@ -149,7 +151,23 @@ export async function searchSimilar(
   checkEmbedding(args.embedding);
   const excluded = args.excludeVersionIds ?? [];
   assertVersionIds(excluded);
+  const scoped = args.versionIds ?? [];
+  assertVersionIds(scoped);
   const literal = toVectorLiteral(args.embedding);
+  const clauses = ['tenant_id = $1'];
+  const params: unknown[] = [args.tenantId, literal, args.topK];
+  if (excluded.length > 0) {
+    params.push(excluded);
+    clauses.push(`and not (document_version_id = any($${params.length}::uuid[]))`);
+  }
+  if (scoped.length > 0) {
+    params.push(scoped);
+    clauses.push(`and document_version_id = any($${params.length}::uuid[])`);
+  }
+  if (args.kinds && args.kinds.length > 0) {
+    params.push(args.kinds);
+    clauses.push(`and kind = any($${params.length})`);
+  }
   const rows = (
     await query(
       // Tenant scoping is structural (no unscoped path exists). Recall note:
@@ -159,12 +177,10 @@ export async function searchSimilar(
       `select id, document_id, document_version_id, page, section_path, kind, text_content,
               embedding <=> $2::vector as distance
        from document_segment
-       where tenant_id = $1 ${excluded.length > 0 ? 'and not (document_version_id = any($4::uuid[]))' : ''}
+       where ${clauses.join(' ')}
        order by embedding <=> $2::vector
        limit $3`,
-      excluded.length > 0
-        ? [args.tenantId, literal, args.topK, excluded]
-        : [args.tenantId, literal, args.topK],
+      params,
     )
   ).rows;
   return rows.map(rowToSimilar);
