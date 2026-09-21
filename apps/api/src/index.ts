@@ -7,3 +7,5 @@ export const API_VERSION = '0.1.0';
 export function createHealthResponse(): HealthStatus {
   return createHealthStatus(API_VERSION);
 }
+
+export * from './bootstrap.js';

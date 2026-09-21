@@ -12,3 +12,5 @@ export function databaseScheme(url: string): string {
   const head = url.split(':', 1)[0];
   return head ?? '';
 }
+
+export * from './check.js';

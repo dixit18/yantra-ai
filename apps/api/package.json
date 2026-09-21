@@ -15,7 +15,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@yantra/contracts": "workspace:*"
+    "@yantra/config": "workspace:*",
+    "@yantra/contracts": "workspace:*",
+    "@yantra/db": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

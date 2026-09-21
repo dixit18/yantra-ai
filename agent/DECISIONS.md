@@ -62,4 +62,10 @@
   `@playwright/test` enforces the 3D-perfect gate in CI.
 - Waived (critic-agreed): full-viewport hero whitespace is deliberate staging,
   not a void; the "best service engineer" headline is spec §7.4 verbatim.
+- 2026-09-18 (P1-ENV-002): `pg@8` is the only runtime infra dep; zod v4 needs
+  schema-level `error:` for missing-string cases (per-check messages don't
+  cover absent values); live-DB tests use `skipIf(!DATABASE_URL)` so green
+  without secrets; validation errors and bootstrap status never carry
+  credential values (asserted in tests); scale-later absence is a unit test,
+  not a wiki promise.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

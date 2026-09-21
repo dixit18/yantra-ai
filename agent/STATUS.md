@@ -29,10 +29,14 @@
     `pnpm build/typecheck/lint/test` green, `pnpm e2e` 5/5 (content, stepper,
     reduced-motion poster, no scroll hijack, mobile), live probe canvas:1 with
     zero page errors, screenshot-reviewed twice.
-- Platform tasks queue behind this gate (owner order); next: P1-ENV-002.
-- Next ready: 3D pipeline (this task), then P1-ENV-002 (lean env validation —
-  unblocked by P1-REPO-001) and
-  P1-OBS-005 / P1-UI-006 / P1-CICD-009 per
+- P1-ENV-002 DONE 2026-09-18: lean env contract (`validateLeanEnv` + redaction),
+  injectable DB health check (`pg` only), blob-root guarantee, api `bootstrap()`
+  with a no-scale-deps guard test. Verified: build 14/14, typecheck 18/18,
+  lint 14/14, test 18/18, format clean; live Neon run → env valid, model mock,
+  vector 0.8.6, server PostgreSQL 18.6 (redacted host only, zero secrets logged).
+- Platform tasks queue behind this gate (owner order); next: P1-DB-003 (tenant
+  schema + migrations, now unblocked).
+- Ready next: P1-DB-003, P1-OBS-005, P1-UI-006, P1-CICD-009 per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

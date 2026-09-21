@@ -19,3 +19,5 @@ export type EnvName = z.infer<typeof EnvNameSchema>;
 export function createHealthStatus(version: string): HealthStatus {
   return HealthStatusSchema.parse({ status: 'ok', version });
 }
+
+export * from './env.js';

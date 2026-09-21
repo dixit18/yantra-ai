@@ -9,3 +9,5 @@ export function loadLocalConfig(env: NodeJS.ProcessEnv = process.env): LocalConf
   const raw = env['LOCAL_BLOB_ROOT']?.trim();
   return { localBlobRoot: raw && raw.length > 0 ? raw : DEFAULT_BLOB_ROOT };
 }
+
+export * from './blob.js';
