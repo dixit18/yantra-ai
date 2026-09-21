@@ -51,7 +51,12 @@
   `authenticateRequest`. Verified: build 14/14, typecheck 18/18, lint 14/14,
   test 18/18, format clean; live adversarial → authenticate + 4 codes,
   cross-tenant/permission/forged/spoofed denials, zero litter (0 demo-auth rows).
-- Ready next: P1-CICD-009 (last P0), then P1-OBS-005 / P1-UI-006 per
+- P1-CICD-009 DONE 2026-09-18: `.github/workflows/ci.yml` (frozen install +
+  pnpm store cache, format/lint/typecheck/test/build, Playwright Chromium +
+  e2e, audit high+, gitleaks). Dry-ran the exact sequence locally: all green;
+  audit reports 2 moderate (vitest dev-only path traversal, below threshold).
+  Gitleaks runs in CI only (history already verified clean at every commit).
+- Ready next: P1-OBS-005 / P1-UI-006 (both P1) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

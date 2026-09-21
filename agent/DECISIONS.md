@@ -91,4 +91,11 @@
   load from DB per request and the token tenant is re-checked against the user
   row; guards throw (uncallable-to-forget); live tests use a throwaway secret,
   never APP_SECRET.
+- 2026-09-18 (P1-CICD-009): single-job `ci` workflow mirroring local commands
+  1:1 (no CI-only scripts); frozen lockfile; audit threshold high (2 moderate
+  vitest dev-only advisories accepted — test runner, never ships, revisit on
+  patch); live-DB tests skip without secrets so forks stay green — explicitly
+  accepted gap: public CI carries no database secrets, so migration/tenant
+  paths are proven locally per task with pasted evidence instead; revisit with
+  a secrets-backed CI job when a staging database exists.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
