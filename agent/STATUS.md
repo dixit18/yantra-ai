@@ -65,7 +65,12 @@
   scrubbed payloads). Hardened per critic BLOCKED round. Verified: build
   14/14, typecheck 18/18, lint 14/14, test 18/18, format clean; live audit
   write+read rolled back (0 probe rows persist).
-- Ready next: P1-UI-006 (design tokens/primitives + shell) per
+- P1-UI-006 DONE 2026-09-18: `@yantra/ui` design system (TOKENS + Button/Chip/
+  Eyebrow/SiteMark/Shell, single-source shell.css, tokens↔CSS sync test) adopted
+  by web (layout, page, hero). Verified: build 14/14, typecheck 19/19, lint
+  14/14, test 19/19, format clean, e2e 9/9 (5 hero + 4 shell: landmarks, skip
+  link, visible focus, nav), screenshot-reviewed, zero page errors.
+- Ready next: P1-WEB-007 (marketing pages) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

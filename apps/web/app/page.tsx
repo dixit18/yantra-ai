@@ -1,11 +1,18 @@
+import { Eyebrow, Shell } from '@yantra/ui';
 import { HeroSection } from './hero-section';
 
 export default function Home() {
   return (
-    <main className="shell">
+    <Shell
+      nav={[
+        { href: '#demo', label: 'Demo' },
+        { href: '#problem', label: 'Problem' },
+      ]}
+      footerNote="Yantra AI — lean MVP demo. Synthetic unit, no customer data."
+    >
       <HeroSection />
       <section id="problem" className="strip" aria-labelledby="problem-h">
-        <p className="eyebrow">The problem</p>
+        <Eyebrow>The problem</Eyebrow>
         <h2 id="problem-h">
           The answer usually exists. Finding the right one is the expensive part.
         </h2>
@@ -27,9 +34,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <footer className="site-footer">
-        <p>Yantra AI — lean MVP demo. Synthetic unit, no customer data.</p>
-      </footer>
-    </main>
+    </Shell>
   );
 }

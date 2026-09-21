@@ -11,6 +11,7 @@ import {
   type StoryStepId,
   type Subsystem,
 } from '@yantra/3d';
+import { Button, Eyebrow } from '@yantra/ui';
 
 export const DEMO_SERIAL = 'SN YAN-PH-2041 · REV C';
 
@@ -45,19 +46,17 @@ export function HeroSection() {
   return (
     <section id="demo" className="hero" aria-labelledby="hero-h">
       <div className="hero-copy">
-        <p className="eyebrow">Yantra AI — governed product specialist</p>
+        <Eyebrow>Yantra AI — governed product specialist</Eyebrow>
         <h1 id="hero-h">Your best service engineer, available on every machine.</h1>
         <p className="lede">
           Turn manuals, parts data, service history and expert rules into a governed product
           specialist for customers, dealers and technicians.
         </p>
         <div className="cta-row">
-          <a className="btn btn-primary" href="#demo-visual">
-            See how a machine is resolved
-          </a>
-          <a className="btn btn-ghost" href="#problem">
+          <Button href="#demo-visual">See how a machine is resolved</Button>
+          <Button variant="ghost" href="#problem">
             Why it matters
-          </a>
+          </Button>
         </div>
         <div className="stepper" role="group" aria-label="Machine journey">
           {HERO_STEPS.map((s) => (

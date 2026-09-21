@@ -1,49 +1,8 @@
-:root {
-  --graphite: #23272e;
-  --paper: #faf7f1;
-  --steel: #8a94a0;
-  --accent: #e8590c;
-  --ok: #2f9e44;
-  --warn: #f08c00;
-  --danger: #e03131;
-  --line: #ddd5c6;
-  --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--graphite);
-  font-family: var(--font-ui);
-  line-height: 1.55;
-}
+/* Page styles for the marketing home. Tokens, base, and y-* primitives live
+   in @yantra/ui/shell.css (single source); this file holds page composition. */
 
 .mono {
   font-family: var(--font-mono);
-}
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--steel);
-  margin: 0 0 1rem;
-}
-
-.shell {
-  max-width: 76rem;
-  margin: 0 auto;
-  padding: 0 1.5rem;
 }
 
 .hero {
@@ -64,7 +23,7 @@ body {
 
 .lede {
   font-size: 1.1rem;
-  color: #3a4048;
+  color: var(--ink-soft);
   margin: 0 0 1.75rem;
   max-width: 34rem;
 }
@@ -74,32 +33,6 @@ body {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 2rem;
-}
-
-.btn {
-  display: inline-block;
-  padding: 0.7rem 1.2rem;
-  border: 1px solid var(--graphite);
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.btn-primary {
-  background: var(--graphite);
-  color: var(--paper);
-}
-
-.btn-ghost {
-  color: var(--graphite);
-  background: transparent;
-}
-
-.btn:focus-visible,
-.step-btn:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .stepper {
@@ -124,6 +57,11 @@ body {
   background: var(--graphite);
   color: var(--paper);
   border-color: var(--graphite);
+}
+
+.step-btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .annotation,
@@ -200,15 +138,8 @@ body {
 
 .strip-grid p {
   margin: 0;
-  color: #3a4048;
+  color: var(--ink-soft);
   font-size: 0.95rem;
-}
-
-.site-footer {
-  padding: 2rem 0 3rem;
-  border-top: 1px solid var(--line);
-  color: var(--steel);
-  font-size: 0.85rem;
 }
 
 @media (max-width: 900px) {
@@ -232,18 +163,5 @@ body {
 
   .strip-grid > div:first-child {
     border-top: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
   }
 }

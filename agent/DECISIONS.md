@@ -109,4 +109,9 @@
   cycle, no duplicated security logic.
   Deferred with rationale: Buffer/Map fidelity, extra key variants,
   worker-thread ALS, iat-future check.
+- 2026-09-18 (P1-UI-006): ui ships compiled dist + root shell.css (deep import,
+  no transpilePackages needed); React via peerDeps with devDeps for SSR tests
+  (single instance via webpack symlink dedupe); page CSS holds composition
+  only; components pure for shared SSR/test path; token↔CSS sync test guards
+  drift.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
