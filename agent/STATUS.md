@@ -56,6 +56,8 @@
   e2e, audit high+, gitleaks). Dry-ran the exact sequence locally: all green;
   audit reports 2 moderate (vitest dev-only path traversal, below threshold).
   Gitleaks runs in CI only (history already verified clean at every commit).
+  Branch protection live: required `ci` check (strict), admins not blocked —
+  red CI blocks merge, verified via API response.
 - Ready next: P1-OBS-005 / P1-UI-006 (both P1) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
