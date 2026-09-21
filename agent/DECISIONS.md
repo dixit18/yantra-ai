@@ -98,4 +98,15 @@
   accepted gap: public CI carries no database secrets, so migration/tenant
   paths are proven locally per task with pasted evidence instead; revisit with
   a secrets-backed CI job when a staging database exists.
+- 2026-09-18 (P1-OBS-005 hardening, critic BLOCKED→fixed): message text is
+  scrubbed like fields (assignment-pattern redaction, prose-safe); audit data
+  scrubbed before immutable insert; **proto**/constructor keys dropped;
+  correlation resolves per emit (ambient wins, explicit pins); audit types are
+  a closed const union with size caps; sinks never throw (dropped counter);
+  createCorrelationId moved to context.ts to break the logger↔index cycle.
+  Single audit construction site: contracts' buildAuditInsert (allowlist, caps,
+  scrub) used by both the telemetry writer and the db seed — no db↔telemetry
+  cycle, no duplicated security logic.
+  Deferred with rationale: Buffer/Map fidelity, extra key variants,
+  worker-thread ALS, iat-future check.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

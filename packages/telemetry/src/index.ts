@@ -1,5 +1,5 @@
-// P1-REPO-001 seed for P1-OBS-005 — correlation IDs span web/API/agent/tools.
-// Structured logging and the audit writer arrive in P1-OBS-005.
-export function createCorrelationId(): string {
-  return crypto.randomUUID();
-}
+// P1-OBS-005 — correlation IDs span web/API/agent/tools; logging, redaction,
+// correlation context, and the audit writer live alongside.
+export * from './context.js';
+export * from './logger.js';
+export * from './audit.js';

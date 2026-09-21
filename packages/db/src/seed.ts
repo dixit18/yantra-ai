@@ -5,6 +5,7 @@
 // each run appends one audit_event, which is correct — audit is append-only.
 import type { QueryFn, QueryRow } from './check.js';
 import type { MigrationConn } from './migrate.js';
+import { buildAuditInsert } from '@yantra/contracts';
 
 export const DEMO_PERMISSIONS: readonly { code: string; description: string }[] = [
   { code: 'knowledge:approve', description: 'Approve knowledge assertions' },
@@ -113,11 +114,15 @@ export async function seedDemoTenant(
     // Tests seed with audit:false to stay clean (the audit write itself is
     // covered by unit test + the permanent demo tenant's live row).
     if (options.audit ?? true) {
-      await query(
-        `insert into audit_event (tenant_id, actor_user_id, type, entity, entity_id, data)
-       values ($1, $2, 'tenant.seeded', 'tenant', $3, $4)`,
-        [tenant.id, admin.id, tenant.id, JSON.stringify({ slug })],
-      );
+      const insert = buildAuditInsert({
+        tenantId: tenant.id,
+        actorUserId: admin.id,
+        type: 'tenant.seeded',
+        entity: 'tenant',
+        entityId: tenant.id,
+        data: { slug },
+      });
+      await query(insert.sql, insert.params);
     }
     await query('commit');
 

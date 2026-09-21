@@ -21,3 +21,7 @@ export function createHealthStatus(version: string): HealthStatus {
 }
 
 export * from './env.js';
+
+export * from './scrub.js';
+
+export * from './audit.js';

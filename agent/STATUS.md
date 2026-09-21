@@ -58,7 +58,14 @@
   Gitleaks runs in CI only (history already verified clean at every commit).
   Branch protection live: required `ci` check (strict), admins not blocked —
   red CI blocks merge, verified via API response.
-- Ready next: P1-OBS-005 / P1-UI-006 (both P1) per
+- P1-OBS-005 DONE 2026-09-18: JSON logger (level filter, scope, per-emit
+  correlation, sink-failure counting), ALS correlation context, choke-point
+  secret redaction (keys, message assignments, bearer values, DB URLs,
+  prototype-key safe), typed `writeAuditEvent` (closed allowlist, caps,
+  scrubbed payloads). Hardened per critic BLOCKED round. Verified: build
+  14/14, typecheck 18/18, lint 14/14, test 18/18, format clean; live audit
+  write+read rolled back (0 probe rows persist).
+- Ready next: P1-UI-006 (design tokens/primitives + shell) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

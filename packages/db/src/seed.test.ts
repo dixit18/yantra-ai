@@ -6,10 +6,13 @@ import { DEMO_PERMISSIONS, seedDemoTenant } from './seed.js';
 function scripted(responses: Record<string, QueryRow[]>): {
   connect: () => Promise<MigrationConn>;
   seen: string[];
+  params: unknown[][];
 } {
   const seen: string[] = [];
-  const query: QueryFn = async (sql: string) => {
+  const params: unknown[][] = [];
+  const query: QueryFn = async (sql: string, p?: unknown[]) => {
     seen.push(sql);
+    params.push(p ?? []);
     for (const [fragment, rows] of Object.entries(responses)) {
       if (sql.includes(fragment)) {
         return { rows };
@@ -17,12 +20,12 @@ function scripted(responses: Record<string, QueryRow[]>): {
     }
     return { rows: [] };
   };
-  return { connect: async () => ({ query, release: () => {} }), seen };
+  return { connect: async () => ({ query, release: () => {} }), seen, params };
 }
 
 describe('seedDemoTenant (scripted query)', () => {
   it('creates a fresh tenant graph with upserts everywhere', async () => {
-    const { connect, seen } = scripted({
+    const { connect, seen, params } = scripted({
       'select id from tenant': [],
       'insert into tenant': [{ id: 't-1' }],
       'select id from role': [],
@@ -46,7 +49,8 @@ describe('seedDemoTenant (scripted query)', () => {
       }
       expect(sql).toMatch(/on conflict/);
     }
-    expect(writes.join('\n')).toContain('tenant.seeded');
+    expect(writes.join('\n')).toContain('insert into audit_event');
+    expect(params.flat().filter((p) => p === 'tenant.seeded')).toHaveLength(1);
   });
 
   it('skips the audit write when asked (test graphs stay clean)', async () => {
