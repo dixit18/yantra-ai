@@ -13,3 +13,5 @@ export function isSupersededAt(version: VersionWindow, at: Date = new Date()): b
 }
 
 export * from './documents.js';
+
+export * from './pdf.js';

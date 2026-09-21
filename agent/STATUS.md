@@ -102,7 +102,11 @@
   0001_init, 0002_junction_guards, 0003_audit_restrict, 0004_blob_files,
   0005_blob_checks, 0006_documents, 0007_document_guards, 0008_supersede_order,
   0009_transition_contract; `select count(*) … where slug like 'demo-doc-%'` → 0.
-- Ready next: P2-PARSE-012 (PDF parser) per
+- P2-PARSE-012 DONE 2026-09-18: pdfjs-dist parser (page anchors, size-ranked
+  section paths, spatially grouped tables, typed empty/corrupt/encrypted
+  errors, pure-retryable) with pdf-lib-generated fixtures. Verified: build
+  15/15, typecheck 21/21, lint 15/15, test 21/21, format clean.
+- Ready next: P2-XLSX-013 (spreadsheet parser) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).
