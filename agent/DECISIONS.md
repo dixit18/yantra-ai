@@ -151,10 +151,20 @@
   branch tested via pure classifier (pdf-lib cannot encrypt).
 - 2026-09-18 (P2-PARSE-012 hardening, critic NEEDS-WORK→fixed): whitespace-only
   glyphs skipped; heading ranks document-wide; TOC dot-leaders proven as text;
-  same-size-bold limit documented; 20 MB parse cap;   pdfjs v6 exposes no
+  same-size-bold limit documented; 20 MB parse cap; pdfjs v6 exposes no
   destroy() on Node (verified at runtime — the types were right).
 - 2026-09-18 (P2-PARSE-012 hardening #2): TOC dot-leader lines (run of 5+
   dots) are excluded from table detection — alignment without data; decimals
   and ellipses unaffected by the threshold.
-- TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).
+- 2026-09-18 (P2-XLSX-013): SheetJS for XLSX, owned CSV parser (CSV has no
+  types — coercing '00123' to 123 destroys part numbers; numerics belong to
+  later schema-aware stages); XLSX requires ZIP magic (legacy .xls out of
+  scope); blanks normalize to null; async entries yield the loop (true
+  streaming deferred to measured need).
+- 2026-09-18 (P2-XLSX-013 hardening, critic NEEDS-WORK→fixed): cellDates on
+  (serials are corruption); error cells surface literals never codes (numeric
+  7 as data would be a fidelity hazard); single-column sheets stay headerless
+  (no structural evidence — claiming row zero mislabels); duplicate headers
+  preserved verbatim (dedup belongs to ingestion, not parsing); CSV delimiter
+  detected, BOM stripped, unclosed quotes rejected; OLE magic → encrypted.
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

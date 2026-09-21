@@ -106,7 +106,11 @@
   section paths, spatially grouped tables, typed empty/corrupt/encrypted
   errors, pure-retryable) with pdf-lib-generated fixtures. Verified: build
   15/15, typecheck 21/21, lint 15/15, test 21/21, format clean.
-- Ready next: P2-XLSX-013 (spreadsheet parser) per
+- P2-XLSX-013 DONE 2026-09-18: SheetJS XLSX parser (title-row skip, verbatim
+  headers, text+typed cells) + owned CSV parser (fidelity-first, no numeric
+  coercion) + token normalizer + async entries. Verified: build 15/15,
+  typecheck 21/21, lint 15/15, test 21/21, format clean.
+- Ready next: P2-EMBED-014 (embedding pipeline) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).
