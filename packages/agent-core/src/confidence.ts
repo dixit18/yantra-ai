@@ -8,6 +8,9 @@ export interface ConfidenceSignals {
   sources: number;
   distinctDocs: number;
   riskClass: RiskClass;
+  // Best (min) vector distance among non-exact hits; Infinity when every hit
+  // is exact or there are no hits. Breadth without relevance is noise.
+  bestVectorDistance?: number;
 }
 
 export const MAX_CONFIDENCE = 0.97;
@@ -18,7 +21,11 @@ export function computeConfidence(signals: ConfidenceSignals): number {
     score += 0.3;
   }
   score += 0.1 * Math.min(signals.distinctDocs, 3);
-  if (signals.sources >= 3) {
+  // Breadth counts only with relevance: exact evidence, or vectors close
+  // enough to mean something. Three irrelevant segments must not outvote an
+  // empty evidence set — that is precisely when to abstain.
+  const relevant = signals.exactHits > 0 || (signals.bestVectorDistance ?? Infinity) < 0.8;
+  if (signals.sources >= 3 && relevant) {
     score += 0.1;
   }
   const penalty: Record<RiskClass, number> = { R0: 0, R1: 0.05, R2: 0.15, R3: 0.3, R4: 1 };

@@ -213,4 +213,12 @@
   confidence is one gate among several (citations mandatory regardless);
   empty input validates before any run row; future trace viewers must escape
   on render (stored payloads are raw by design).
+- 2026-09-18 (P2-EVAL-018): deterministic scoring only (no model judge);
+  knownFailure tracks the injection gap without gating; breadth bonus requires
+  relevance (exact hit or close vector) after an unsupported question answered
+  on volume alone — found via failing golden, fixed, pinned.
+- 2026-09-18 (P2-EVAL-018 hardening, critic NEEDS-WORK→fixed): case-folded
+  matching; forbidden checked on all outcomes; trace presence required;
+  XPASS fails the suite; per-case sha256 logged (git history remains the
+  source of truth — no manifest file until datasets leave the repo).
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

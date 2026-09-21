@@ -138,7 +138,11 @@
   ModelGateway seam. Verified: build 15/15, typecheck 23/23, lint 15/15, test
   23/23, format clean; live golden loop (answered+cited+traced, abstained,
   R4-escalated, cross-tenant silent); zero litter.
-- Ready next: P2-EVAL-018 (golden eval harness) per
+- P2-EVAL-018 DONE 2026-09-18: versioned JSON golden dataset (5 cases),
+  deterministic scorer, injectable runner with knownFailure tracking, shared
+  live fixture. Verified: build 15/15, typecheck 24/24, lint 15/15, test 24/24,
+  format clean; live golden 5/5 incl. tracked injection failure; zero litter.
+- Ready next: P2-CONSOLE-019 (knowledge console) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).

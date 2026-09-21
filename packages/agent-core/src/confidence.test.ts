@@ -18,4 +18,10 @@ describe('computeConfidence', () => {
     expect(computeConfidence({ ...base, riskClass: 'R3' })).toBeLessThan(computeConfidence(base));
     expect(computeConfidence({ ...base, riskClass: 'R4' })).toBe(0);
   });
+
+  it('withholds the breadth bonus from irrelevant volume', () => {
+    const noisy = { exactHits: 0, sources: 5, distinctDocs: 1, riskClass: 'R0' as const };
+    expect(computeConfidence({ ...noisy, bestVectorDistance: 1.0 })).toBe(0.3);
+    expect(computeConfidence({ ...noisy, bestVectorDistance: 0.4 })).toBe(0.4);
+  });
 });

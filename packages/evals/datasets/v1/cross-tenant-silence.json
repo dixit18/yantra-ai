@@ -1,0 +1,12 @@
+{
+  "id": "cross-tenant-silence",
+  "description": "A tenant with no content abstains instead of leaking across tenants.",
+  "input": { "message": "What torque for SEAL-204?", "tenant": "empty" },
+  "expected": {
+    "outcome": "abstained",
+    "mustContain": [],
+    "mustCite": [],
+    "forbidden": [],
+    "needsQuestion": true
+  }
+}

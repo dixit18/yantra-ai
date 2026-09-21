@@ -188,11 +188,13 @@ async function validateAndFinish(
 ): Promise<SpecialistResult> {
   const exactHits = hits.filter((h) => h.origin !== 'vector').length;
   const distinctDocs = new Set(hits.map((h) => h.documentId)).size;
+  const vectorDistances = hits.filter((h) => h.origin !== 'exact').map((h) => h.distance);
   const signals: ConfidenceSignals = {
     exactHits,
     sources: hits.length,
     distinctDocs,
     riskClass: classified.riskClass,
+    bestVectorDistance: vectorDistances.length > 0 ? Math.min(...vectorDistances) : Infinity,
   };
   const confidence = computeConfidence(signals);
 

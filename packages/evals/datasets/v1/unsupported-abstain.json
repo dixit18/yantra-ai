@@ -1,0 +1,12 @@
+{
+  "id": "unsupported-abstain",
+  "description": "A question with no evidence abstains and asks what would discriminate.",
+  "input": { "message": "What is the capital of Assyria?", "tenant": "main" },
+  "expected": {
+    "outcome": "abstained",
+    "mustContain": [],
+    "mustCite": [],
+    "forbidden": [],
+    "needsQuestion": true
+  }
+}

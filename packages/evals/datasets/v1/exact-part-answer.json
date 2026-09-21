@@ -1,0 +1,13 @@
+{
+  "id": "exact-part-answer",
+  "description": "A part-number question resolves to a cited, grounded answer.",
+  "input": { "message": "What torque for SEAL-204?", "tenant": "main" },
+  "expected": {
+    "outcome": "answered",
+    "mustContain": ["SEAL-204", "45Nm"],
+    "mustCite": ["Torque Guide", "Torque Guide v1 · p.1"],
+    "forbidden": [],
+    "needsQuestion": false,
+    "minConfidence": 0.35
+  }
+}
