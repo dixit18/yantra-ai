@@ -206,4 +206,11 @@
   caches must not outlive URL expiry); viewer pages send Referrer-Policy:
   no-referrer; URL bearers accepted as demo-only risk (15-min TTL, server
   logs out of scope) until cookie sessions land with console auth.
+- 2026-09-18 (P2-AGENT-017 hardening, critic NEEDS-WORK→fixed): R4 is
+  order-independent verb+noun co-occurrence (rephrase suite pinned); conflict
+  branch deleted outright (conflict detection belongs to P7, not a dead flag);
+  speculative ModelGateway deleted (the AnswerDrafter interface IS the seam);
+  confidence is one gate among several (citations mandatory regardless);
+  empty input validates before any run row; future trace viewers must escape
+  on render (stored payloads are raw by design).
 - TODO: LICENSE choice for public repo; pre-commit secret scan (gitleaks).

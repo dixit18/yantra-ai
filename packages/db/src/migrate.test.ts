@@ -133,6 +133,7 @@ describe('discoverMigrations', () => {
       '0010_segments',
       '0011_retrieval_events',
       '0012_retrieval_guards',
+      '0013_agent_runs',
     ]);
     expect(files[0]?.sql ?? '').toContain('create table tenant');
   });

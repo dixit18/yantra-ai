@@ -14,9 +14,17 @@
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@yantra/contracts": "workspace:*",
+    "@yantra/knowledge": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/pg": "catalog:",
+    "@yantra/blobstore": "workspace:*",
+    "@yantra/db": "workspace:*",
     "eslint": "catalog:",
+    "pg": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

@@ -27,3 +27,5 @@ export type { Embedder } from './embeddings.js';
 export * from './segments.js';
 
 export * from './citations.js';
+
+export * from './retrieval.js';

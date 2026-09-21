@@ -12,3 +12,9 @@ export type RiskClass = keyof typeof RiskRank;
 export function riskOutranks(a: RiskClass, b: RiskClass): boolean {
   return RiskRank[a] > RiskRank[b];
 }
+
+export * from './intent.js';
+export * from './confidence.js';
+export * from './drafter.js';
+export * from './trace.js';
+export * from './specialist.js';

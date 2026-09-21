@@ -132,7 +132,13 @@
   with native-PDF page fragment. Verified: build 15/15, typecheck 23/23, lint
   15/15, test 23/23, format clean, e2e 21/21 with secrets (20 + 1 skip
   without); zero litter.
-- Ready next: P2-AGENT-017 (specialist graph) per
+- P2-AGENT-017 DONE 2026-09-18: bounded specialist graph (classify → asset
+  deferred → retrieve → extractive draft → validate → answer/abstain/escalate)
+  with persisted run traces, rule-based intent/risk, observable confidence,
+  ModelGateway seam. Verified: build 15/15, typecheck 23/23, lint 15/15, test
+  23/23, format clean; live golden loop (answered+cited+traced, abstained,
+  R4-escalated, cross-tenant silent); zero litter.
+- Ready next: P2-EVAL-018 (golden eval harness) per
   `yantra_ai_initial_backlog_LEAN_MVP.yaml`.
 - Needs from human: MODEL_PROVIDER/MODEL_API_KEY/APP_SECRET when real AI calls
   begin; GitHub repo name confirmed `yantra-ai` (public).
